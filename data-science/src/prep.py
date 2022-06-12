@@ -1,3 +1,9 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+"""
+Prepares raw data and provides training, validation and test datasets
+"""
+
 import argparse
 
 from pathlib import Path
@@ -9,6 +15,7 @@ import mlflow
 
 
 def parse_args():
+    '''Parse input arguments'''
 
     parser = argparse.ArgumentParser("prep")
     parser.add_argument("--raw_data", type=str, help="Path to raw data")
@@ -19,6 +26,9 @@ def parse_args():
     return args
 
 def main():
+    '''Read, split, and save datasets'''
+
+    mlflow.start_run()
 
     # ---------- Parse Arguments ----------- #
     # -------------------------------------- #
@@ -55,7 +65,7 @@ def main():
 
     train = data[msk_train]
     val = data[msk_val]
-    test = data[msk_test] 
+    test = data[msk_test]
 
     mlflow.log_metric('train size', train.shape[0])
     mlflow.log_metric('val size', val.shape[0])
@@ -65,5 +75,8 @@ def main():
     val.to_csv((Path(args.prepared_data) / "val.csv"))
     test.to_csv((Path(args.prepared_data) / "test.csv"))
 
+    mlflow.end_run()
+
 if __name__ == "__main__":
     main()
+    
