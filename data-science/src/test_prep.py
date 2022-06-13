@@ -2,16 +2,12 @@ import os
 import subprocess
 import pandas as pd
 
-def test_evaluate_model():
+def test_prep_data():
     
+    raw_data = "/tmp/raw"
     prepared_data = "/tmp/prep"
-    model_input = "/tmp/train"
-    evaluation_output = "/tmp/evaluate"
-    model_name = "taxi-model"
-
+    os.makedirs(raw_data, exist_ok = True)
     os.makedirs(prepared_data, exist_ok = True)
-    os.makedirs(model_input, exist_ok = True)
-    os.makedirs(evaluation_output, exist_ok = True)
 
     data = {
         'cost': [4.5, 6.0, 9.5, 4.0, 6.0, 11.5, 25.0, 3.5, 5.0, 11.0, 7.5, 24.5, 9.5,
@@ -77,10 +73,10 @@ def test_evaluate_model():
         'vendor': [2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2]
     }
 
-    train_df = pd.DataFrame(train_data)
-    train_df.to_csv(os.path.join(prepared_data, "train.csv"))
+    df = pd.DataFrame(data)
+    df.to_csv(os.path.join(raw_data, "taxi-data.csv"))
 
-    cmd = f"python train.py --prepared_data={prepared_data} --model_output={model_output}"
+    cmd = f"python prep.py --raw_data={raw_data} --prepared_data={prepared_data}"
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate() 
     result = str(out).split('\\n')
@@ -88,7 +84,7 @@ def test_evaluate_model():
         if not lin.startswith('#'):
             print(lin)
 
-    print("Train Model Unit Test Completed")
+    print("¨Prep Data Unit Test Completed")
 
 if __name__ == "__main__":
-    test_train_model()
+    test_prep_data()
