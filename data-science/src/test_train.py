@@ -72,7 +72,7 @@ def test_train_model():
         'vendor': [2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2]
     }
 
-    train_df = pd.Dataframe(train_data)
+    train_df = pd.DataFrame(train_data)
     train_df.to_csv(os.path.join(prepared_data, "train.csv"))
     train.main(prepared_data, model_output)
     print("Train Unit Test Completed")
