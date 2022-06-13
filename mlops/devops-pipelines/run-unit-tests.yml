@@ -12,13 +12,10 @@ steps:
       pip install pytest codecov pydocstyle pytest-cov pylint pylint_junit flake8==3.7.* flake8_formatter_junit_xml==0.0.*
     displayName: 'Install testing dependencies'
 
-<<<<<<< HEAD
-=======
   - script: |
-      pip install -r data-science/environment/requirements.txt
+      pip install -r data-science/environment/train-requirements.txt
     displayName: 'Install project requirements'
 
->>>>>>> 5708c40 (adding train unit tests)
   - script: |   
       flake8 --output-file=flake8-testresults.xml --format junit-xml --exit-zero
     displayName: 'Run code quality tests (Flake8)'
