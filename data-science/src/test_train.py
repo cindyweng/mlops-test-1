@@ -6,6 +6,7 @@ def test_train_model():
     
     prepared_data = "/tmp/prep"
     model_output = "/tmp/train"
+    os.makedirs(prepared_data, exist_ok = True)
     os.makedirs(model_output, exist_ok = True)
 
     train_data = {
