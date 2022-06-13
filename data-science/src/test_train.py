@@ -4,8 +4,8 @@ import train
 
 def test_train_model():
     
-    prepared_data = "/tmp/prep"
-    model_output = "/tmp/train"
+    prepared_data = "/prep"
+    model_output = "/train"
     os.makedirs(model_output, exist_ok = True)
 
     train_data = {
