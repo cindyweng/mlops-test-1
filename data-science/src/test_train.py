@@ -1,11 +1,11 @@
 import os
+import subprocess
 import pandas as pd
-import train
 
 def test_train_model():
     
-    prepared_data = "/prep"
-    model_output = "/train"
+    prepared_data = "/tmp/prep"
+    model_output = "/tmp/train"
     os.makedirs(model_output, exist_ok = True)
 
     train_data = {
@@ -74,8 +74,16 @@ def test_train_model():
 
     train_df = pd.DataFrame(train_data)
     train_df.to_csv(os.path.join(prepared_data, "train.csv"))
-    train.main(prepared_data, model_output)
-    print("Train Unit Test Completed")
+
+    cmd = f"python train.py --prepared_data={prepared_data} --model_output={model_output}"
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    out, err = p.communicate() 
+    result = str(out).split('\\n')
+    for lin in result:
+        if not lin.startswith('#'):
+            print(lin)
+
+    print("Train Model Unit Test Completed")
 
 if __name__ == "__main__":
     test_train_model()
