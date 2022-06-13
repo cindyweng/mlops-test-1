@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import train
 
@@ -77,4 +78,4 @@ def test_train_model():
     print("Train Unit Test Completed")
 
 if __name__ == "__main__":
-    main()
+    test_train_model()
