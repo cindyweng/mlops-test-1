@@ -17,16 +17,16 @@ steps:
     displayName: 'Install project requirements'
 
   - script: |   
-      flake8 --output-file=flake8-testresults.xml --format junit-xml --exit-zero
+      flake8 data-science/src/ --output-file=flake8-testresults.xml --format junit-xml --exit-zero
     displayName: 'Run code quality tests (Flake8)'
 
   - script: |      
-      pylint src/ --output-format=pylint_junit.JUnitReporter --exit-zero > pylint-testresults.xml
+      pylint data-science/src/ --output-format=pylint_junit.JUnitReporter --exit-zero > pylint-testresults.xml
     displayName: 'Run code quality tests (Pylint)'
 
   - script: |
       if [ $(ls data-science/src/ | grep -e test_.*.py) ]; then
-        pytest -v data-science/src/ --doctest-modules --junitxml=unit-testresults.xml --cov=src --cov-append --cov-report=xml:coverage.xml --cov-report=html:htmlcov
+        pytest -v data-science/src/test_prep.py --doctest-modules --junitxml=unit-testresults.xml --cov=src --cov-append --cov-report=xml:coverage.xml --cov-report=html:htmlcov
       fi
     displayName: 'Run all unit tests'
 
