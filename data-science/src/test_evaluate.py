@@ -10,7 +10,7 @@ def test_evaluate_model():
     model_name = "taxi-model"
 
     os.makedirs(prepared_data, exist_ok = True)
-    os.makedirs(model_output, exist_ok = True)
+    os.makedirs(model_input, exist_ok = True)
     os.makedirs(evaluation_output, exist_ok = True)
 
 
@@ -92,10 +92,9 @@ def test_evaluate_model():
         if not lin.startswith('#'):
             print(lin)
     
-    assert os.path.exists(os.path.join(model_output, "model.pkl"))
+    assert os.path.exists(os.path.join(model_input, "model.pkl"))
 
-    cmd = f"python evaluate.py --prepared_data={prepared_data} --model_input={model_input} \ 
-                               --evaluation_output={evaluation_output} --model_name={model_name}"
+    cmd = f"python evaluate.py --prepared_data={prepared_data} --model_input={model_input} --evaluation_output={evaluation_output} --model_name={model_name}"
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate() 
     result = str(out).split('\\n')

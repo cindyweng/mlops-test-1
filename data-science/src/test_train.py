@@ -2,7 +2,7 @@ import os
 import subprocess
 import pandas as pd
 
-def test_evaluate_model():
+def test_train_model():
     
     prepared_data = "/tmp/prep"
     model_output = "/tmp/train"
@@ -10,7 +10,7 @@ def test_evaluate_model():
     os.makedirs(prepared_data, exist_ok = True)
     os.makedirs(model_output, exist_ok = True)
 
-    data = {
+    train_data = {
         'cost': [4.5, 6.0, 9.5, 4.0, 6.0, 11.5, 25.0, 3.5, 5.0, 11.0, 7.5, 24.5, 9.5,
                 7.5, 6.0, 5.0, 9.0, 25.5, 17.5, 52.0],
         'distance': [0.83, 1.27, 1.8, 0.5, 0.9, 2.72, 6.83, 0.45, 0.77, 2.2, 1.5, 6.27,
