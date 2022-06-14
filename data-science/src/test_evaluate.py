@@ -1,14 +1,18 @@
 import os
 import subprocess
 import pandas as pd
-import prep
 
-def test_prep_data():
+def test_evaluate_model():
     
-    raw_data = "/tmp/raw"
     prepared_data = "/tmp/prep"
-    os.makedirs(raw_data, exist_ok = True)
+    model_input = "/tmp/train"
+    evaluation_output = "/tmp/evaluate"
+    model_name = "taxi-model"
+
     os.makedirs(prepared_data, exist_ok = True)
+    os.makedirs(model_output, exist_ok = True)
+    os.makedirs(evaluation_output, exist_ok = True)
+
 
     data = {
         'cost': [4.5, 6.0, 9.5, 4.0, 6.0, 11.5, 25.0, 3.5, 5.0, 11.0, 7.5, 24.5, 9.5,
@@ -74,10 +78,24 @@ def test_prep_data():
         'vendor': [2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2]
     }
 
-    df = pd.DataFrame(data)
-    df.to_csv(os.path.join(raw_data, "taxi-data.csv"))
+    train_df = pd.DataFrame(data)
+    test_df = pd.DataFrame(data)
+
+    train_df.to_csv(os.path.join(prepared_data, "train.csv"))
+    test_df.to_csv(os.path.join(prepared_data, "test.csv"))
+
+    cmd = f"python train.py --prepared_data={prepared_data} --model_output={model_input}"
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    out, err = p.communicate() 
+    result = str(out).split('\\n')
+    for lin in result:
+        if not lin.startswith('#'):
+            print(lin)
     
-    cmd = f"python prep.py --raw_data={raw_data} --prepared_data={prepared_data}"
+    assert os.path.exists(os.path.join(model_output, "model.pkl"))
+
+    cmd = f"python evaluate.py --prepared_data={prepared_data} --model_input={model_input} \ 
+                               --evaluation_output={evaluation_output} --model_name={model_name}"
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate() 
     result = str(out).split('\\n')
@@ -85,12 +103,11 @@ def test_prep_data():
         if not lin.startswith('#'):
             print(lin)
 
-    assert os.path.exists(os.path.join(prepared_data, "train.csv"))
-    assert os.path.exists(os.path.join(prepared_data, "val.csv"))
-    assert os.path.exists(os.path.join(prepared_data, "test.csv"))
+    assert os.path.exists(os.path.join(evaluation_output, "predictions.csv"))
+    assert os.path.exists(os.path.join(evaluation_output, "deploy_flag"))
+    assert os.path.exists(os.path.join(evaluation_output, "perf_comparison.png"))
 
-    print("¨Prep Data Unit Test Completed")
+    print("Evaluate Model Unit Test Completed")
 
 if __name__ == "__main__":
-
-    test_prep_data()
+    test_train_model()

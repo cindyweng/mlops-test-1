@@ -5,13 +5,10 @@ import pandas as pd
 def test_evaluate_model():
     
     prepared_data = "/tmp/prep"
-    model_input = "/tmp/train"
-    evaluation_output = "/tmp/evaluate"
-    model_name = "taxi-model"
+    model_output = "/tmp/train"
 
     os.makedirs(prepared_data, exist_ok = True)
-    os.makedirs(model_input, exist_ok = True)
-    os.makedirs(evaluation_output, exist_ok = True)
+    os.makedirs(model_output, exist_ok = True)
 
     data = {
         'cost': [4.5, 6.0, 9.5, 4.0, 6.0, 11.5, 25.0, 3.5, 5.0, 11.0, 7.5, 24.5, 9.5,
@@ -87,7 +84,9 @@ def test_evaluate_model():
     for lin in result:
         if not lin.startswith('#'):
             print(lin)
-
+    
+    assert os.path.exists(os.path.join(model_output, "model.pkl"))
+    
     print("Train Model Unit Test Completed")
 
 if __name__ == "__main__":
