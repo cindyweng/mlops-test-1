@@ -25,8 +25,7 @@ steps:
     displayName: 'Run code quality tests (Pylint)'
 
   - script: |
-      if [ $(ls data-science/src/ | grep -e test_.*.py) ]; then
-        pytest -v data-science/src/test_prep.py --doctest-modules --junitxml=unit-testresults.xml --cov=src --cov-append --cov-report=xml:coverage.xml --cov-report=html:htmlcov
+      pytest -v data-science/src/test_*.py --doctest-modules --junitxml=unit-testresults.xml --cov=src --cov-append --cov-report=xml:coverage.xml --cov-report=html:htmlcov
       fi
     displayName: 'Run all unit tests'
 
