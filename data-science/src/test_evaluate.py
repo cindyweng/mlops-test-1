@@ -94,7 +94,7 @@ def test_evaluate_model():
     
     assert os.path.exists(os.path.join(model_input, "model.pkl"))
 
-    cmd = f"python evaluate.py --prepared_data={prepared_data} --model_input={model_input} --evaluation_output={evaluation_output} --model_name={model_name}"
+    cmd = f"python data-science/src/evaluate.py --prepared_data={prepared_data} --model_input={model_input} --evaluation_output={evaluation_output} --model_name={model_name}"
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate() 
     result = str(out).split('\\n')

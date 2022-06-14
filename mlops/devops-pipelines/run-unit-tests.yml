@@ -26,7 +26,6 @@ steps:
 
   - script: |
       pytest -v data-science/src/test_*.py --doctest-modules --junitxml=unit-testresults.xml --cov=src --cov-append --cov-report=xml:coverage.xml --cov-report=html:htmlcov
-      fi
     displayName: 'Run all unit tests'
 
   - task: PublishTestResults@2
