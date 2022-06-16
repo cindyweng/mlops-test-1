@@ -1,7 +1,6 @@
 import os
 import subprocess
 import pandas as pd
-import prep
 
 def test_prep_data():
     
