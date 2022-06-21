@@ -25,7 +25,7 @@ steps:
     displayName: 'Run code quality tests (Pylint)'
 
   - script: |
-      pytest -v data-science/unit-tests/*.py --doctest-modules --junitxml=unit-testresults.xml --cov=src --cov-append --cov-report=xml:coverage.xml --cov-report=html:htmlcov
+      pytest -v data-science/unit-tests/*/test_*.py --doctest-modules --junitxml=unit-testresults.xml --cov=src --cov-append --cov-report=xml:coverage.xml --cov-report=html:htmlcov
     displayName: 'Run all unit tests'
 
   - task: PublishTestResults@2
