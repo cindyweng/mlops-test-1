@@ -151,6 +151,7 @@ def test_evaluate_model():
     test_df = pd.DataFrame(test_data)
     test_df.to_csv(os.path.join(prepared_data, "test.csv"))
 
+    global MockModel
     class MockModel:
         @staticmethod
         def predict(data):
