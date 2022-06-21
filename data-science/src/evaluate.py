@@ -28,7 +28,6 @@ import mlflow.pyfunc
 from mlflow.tracking import MlflowClient
 
 class MockModel:
-    @staticmethod
     def predict(data):
         return 5
 
@@ -96,7 +95,6 @@ def main(model_name, prepared_data, model_input, evaluation_output, runner):
 
     # Load the model from input port
     with open((Path(model_input) / "model.pkl"), "rb") as infile:
-        infile.seek(0)
         model = pickle.load(infile)
 
     # ---------------- Model Evaluation ---------------- #

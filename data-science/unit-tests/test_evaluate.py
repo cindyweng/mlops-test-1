@@ -5,7 +5,6 @@ from pathlib import Path
 import pandas as pd
 
 class MockModel:
-    @staticmethod
     def predict(data):
         return 5
 
