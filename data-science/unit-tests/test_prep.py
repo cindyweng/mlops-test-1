@@ -1,8 +1,6 @@
 import os
 import subprocess
 import pandas as pd
-from data-science.src import train
-
 
 def test_prep_data():
     
