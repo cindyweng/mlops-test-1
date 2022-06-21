@@ -4,6 +4,11 @@ import subprocess
 from pathlib import Path
 import pandas as pd
 
+class MockModel:
+    @staticmethod
+    def predict(data):
+        return 5
+
 def test_evaluate_model():
     
     prepared_data = "/tmp/prep"
@@ -150,12 +155,6 @@ def test_evaluate_model():
     train_df.to_csv(os.path.join(prepared_data, "train.csv"))
     test_df = pd.DataFrame(test_data)
     test_df.to_csv(os.path.join(prepared_data, "test.csv"))
-
-    global MockModel
-    class MockModel:
-        @staticmethod
-        def predict(data):
-            return 5
 
     model = MockModel()
     # Save the model

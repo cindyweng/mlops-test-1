@@ -27,6 +27,10 @@ import mlflow.sklearn
 import mlflow.pyfunc
 from mlflow.tracking import MlflowClient
 
+class MockModel:
+    @staticmethod
+    def predict(data):
+        return 5
 
 TARGET_COL = "cost"
 
