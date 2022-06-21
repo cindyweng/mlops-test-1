@@ -160,7 +160,7 @@ def test_evaluate_model():
     with open((Path(model_input) / "model.pkl"), "wb") as outfile:
         pickle.dump(model, outfile)
 
-    cmd = f"python data-science/src/evaluate.py --model_name={model_name} --model_input={model_input} --prepared_data={prepared_data} --evaluation_output={evaluation_output} --runner={runner}"
+    cmd = f"python evaluate.py --model_name={model_name} --model_input={model_input} --prepared_data={prepared_data} --evaluation_output={evaluation_output} --runner={runner}"
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate() 
     result = str(out).split('\\n')
