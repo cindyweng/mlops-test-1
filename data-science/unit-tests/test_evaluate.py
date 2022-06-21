@@ -1,7 +1,8 @@
 import os
+import pickle
 import subprocess
-import pandas as pd
 from pathlib import Path
+import pandas as pd
 
 def test_evaluate_model():
     
@@ -151,9 +152,9 @@ def test_evaluate_model():
     test_df.to_csv(os.path.join(prepared_data, "test.csv"))
 
     class MockModel:
-            @staticmethod
-            def predict(data):
-                return 5
+        @staticmethod
+        def predict(data):
+            return 5
 
     model = MockModel()
     # Save the model

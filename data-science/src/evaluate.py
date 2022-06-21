@@ -99,7 +99,7 @@ def main(model_name, prepared_data, model_input, evaluation_output, runner):
 
     # ----------------- Model Promotion ---------------- #
     if runner == "CloudRunner":
-        predictions, deploy_flag = model_deployment(model_name, evaluation_output, yhat_test, score)
+        predictions, deploy_flag = model_deployment(model_name, evaluation_output, X_test, y_test, yhat_test, score)
 
     # ----------------- Model Fairness ----------------- #
     sensitive_features = { col: X_test[[col]] for col in SENSITIVE_COLS }
@@ -151,7 +151,7 @@ def model_evaluation(X_test, y_test, model, evaluation_output):
 
     return yhat_test, r2
 
-def model_promotion(model_name, evaluation_output, yhat_test, score):
+def model_promotion(model_name, evaluation_output, X_test, y_test, yhat_test, score):
     
     scores = {}
     predictions = {}
