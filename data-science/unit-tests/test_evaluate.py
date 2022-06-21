@@ -11,7 +11,7 @@ def test_evaluate_model():
     runner = "LocalRunner"
 
     os.makedirs(prepared_data, exist_ok = True)
-    os.makedirs(model_output, exist_ok = True)
+    os.makedirs(model_input, exist_ok = True)
     os.makedirs(evaluation_output, exist_ok = True)
 
 
