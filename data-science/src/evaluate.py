@@ -95,7 +95,8 @@ def main(model_name, prepared_data, model_input, evaluation_output, runner):
     X_test = test_data[NUMERIC_COLS + CAT_NOM_COLS + CAT_ORD_COLS]
 
     # Load the model from input port
-    with open((Path(model_input) / "model.pkl"), "r") as infile:
+    with open((Path(model_input) / "model.pkl"), "rb") as infile:
+        infile.seek(0)
         model = pickle.load(infile)
 
     # ---------------- Model Evaluation ---------------- #

@@ -158,7 +158,7 @@ def test_evaluate_model():
 
     model = MockModel()
     # Save the model
-    with open((Path(model_input) / "model.pkl"), "w") as outfile:
+    with open((Path(model_input) / "model.pkl"), "wb") as outfile:
         pickle.dump(model, outfile)
 
     cmd = f"python data-science/src/evaluate.py --model_name={model_name} --model_input={model_input} --prepared_data={prepared_data} --evaluation_output={evaluation_output} --runner={runner}"
