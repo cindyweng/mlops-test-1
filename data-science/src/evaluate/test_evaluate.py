@@ -5,8 +5,8 @@ from pathlib import Path
 import pandas as pd
 
 class MockModel:
-    def predict(data):
-        return 5
+    def predict(self, data):
+        return [5] * len(data)
 
 def test_evaluate_model():
     
