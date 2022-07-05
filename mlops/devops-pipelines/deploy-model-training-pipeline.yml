@@ -54,7 +54,7 @@ stages:
       - script: |
           subscription_id=$(az account get-access-token --query tenant --output tsv)
           ./quick-setup.bash $subscription_id $${{ variables.resource_group }} $${{ variables.aml_workspace }}
-        displayName: 'Install testing dependencies'
+        displayName: 'Register Responsible AI Components'
       - checkout: mlops-templates
         path: s/templates/
       - template: templates/${{ variables.version }}/run-pipeline.yml@mlops-templates
