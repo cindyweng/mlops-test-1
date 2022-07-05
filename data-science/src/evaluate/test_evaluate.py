@@ -7,6 +7,37 @@ from sklearn.ensemble import RandomForestRegressor
 
 import mlflow
 
+TARGET_COL = "cost"
+
+NUMERIC_COLS = [
+    "distance",
+    "dropoff_latitude",
+    "dropoff_longitude",
+    "passengers",
+    "pickup_latitude",
+    "pickup_longitude",
+    "pickup_weekday",
+    "pickup_month",
+    "pickup_monthday",
+    "pickup_hour",
+    "pickup_minute",
+    "pickup_second",
+    "dropoff_weekday",
+    "dropoff_month",
+    "dropoff_monthday",
+    "dropoff_hour",
+    "dropoff_minute",
+    "dropoff_second",
+]
+
+CAT_NOM_COLS = [
+    "store_forward",
+    "vendor",
+]
+
+CAT_ORD_COLS = [
+]
+
 def test_evaluate_model():
     
     test_data = "/tmp/test"
@@ -89,9 +120,14 @@ def test_evaluate_model():
     df = pd.DataFrame(data)
     df.to_parquet(os.path.join(test_data, "test.parquet"))
 
+    # Split the data into inputs and outputs
+    y_test = df[TARGET_COL]
+    X_test = df[NUMERIC_COLS + CAT_NOM_COLS + CAT_ORD_COLS]
+
     # Train a Random Forest Regression Model with the training set
     model = RandomForestRegressor(random_state=0)
-    
+    model.fit(X_test, y_test)
+
     # Save the model
     mlflow.sklearn.save_model(sk_model=model, path=model_input)
 
