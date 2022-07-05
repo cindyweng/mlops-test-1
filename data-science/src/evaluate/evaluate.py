@@ -7,7 +7,6 @@ Saves predictions, evaluation results and deploy flag.
 
 import argparse
 from pathlib import Path
-import pickle
 
 import numpy as np
 import pandas as pd

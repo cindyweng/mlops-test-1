@@ -1,10 +1,11 @@
 import os
-import pickle
 import subprocess
 from pathlib import Path
 import pandas as pd
 
 from sklearn.ensemble import RandomForestRegressor
+
+import mlflow
 
 def test_evaluate_model():
     
