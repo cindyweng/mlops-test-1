@@ -10,18 +10,21 @@ class MockModel:
 
 def test_evaluate_model():
     
-    prepared_data = "/tmp/prep"
-    model_input = "/tmp/train"
+    train_data = "/tmp/train"
+    test_data = "/tmp/test"
+    model_input = "/tmp/model"
     evaluation_output = "/tmp/evaluate"
     model_name = "taxi-model"
     runner = "LocalRunner"
 
-    os.makedirs(prepared_data, exist_ok = True)
+    os.makedirs(train_data, exist_ok = True)
+    os.makedirs(test_data, exist_ok = True)
+
     os.makedirs(model_input, exist_ok = True)
     os.makedirs(evaluation_output, exist_ok = True)
 
 
-    train_data = {
+    data_train = {
         'cost': [4.5, 6.0, 9.5, 4.0, 6.0, 11.5, 25.0, 3.5, 5.0, 11.0, 7.5, 24.5, 9.5,
                 7.5, 6.0, 5.0, 9.0, 25.5, 17.5, 52.0],
         'distance': [0.83, 1.27, 1.8, 0.5, 0.9, 2.72, 6.83, 0.45, 0.77, 2.2, 1.5, 6.27,
@@ -85,7 +88,7 @@ def test_evaluate_model():
         'vendor': [2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2]
     }
 
-    test_data = {
+    data_test = {
         'cost': [4.5, 6.0, 9.5, 4.0, 6.0, 11.5, 25.0, 3.5, 5.0, 11.0, 7.5, 24.5, 9.5,
                 7.5, 6.0, 5.0, 9.0, 25.5, 17.5, 52.0],
         'distance': [0.83, 1.27, 1.8, 0.5, 0.9, 2.72, 6.83, 0.45, 0.77, 2.2, 1.5, 6.27,
@@ -150,17 +153,17 @@ def test_evaluate_model():
     }
 
     # Save the data
-    train_df = pd.DataFrame(train_data)
-    train_df.to_csv(os.path.join(prepared_data, "train.csv"))
-    test_df = pd.DataFrame(test_data)
-    test_df.to_csv(os.path.join(prepared_data, "test.csv"))
+    train_df = pd.DataFrame(data_train)
+    train_df.to_csv(os.path.join(train_data, "train.parquet"))
+    test_df = pd.DataFrame(data_test)
+    test_df.to_csv(os.path.join(test_data, "test.parquet"))
 
     model = MockModel()
     # Save the model
     with open((Path(model_input) / "model.pkl"), "wb") as outfile:
         pickle.dump(model, outfile)
 
-    cmd = f"python data-science/src/evaluate/evaluate.py --model_name={model_name} --model_input={model_input} --prepared_data={prepared_data} --evaluation_output={evaluation_output} --runner={runner}"
+    cmd = f"python data-science/src/evaluate/evaluate.py --model_name={model_name} --model_input={model_input} --train_data={train_data} --test_data={test_data} --evaluation_output={evaluation_output} --runner={runner}"
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     out, err = p.communicate() 
     result = str(out).split('\\n')
