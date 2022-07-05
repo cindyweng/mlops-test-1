@@ -154,9 +154,9 @@ def test_evaluate_model():
 
     # Save the data
     train_df = pd.DataFrame(data_train)
-    train_df.to_csv(os.path.join(train_data, "train.parquet"))
+    train_df.to_parquet(os.path.join(train_data, "train.parquet"))
     test_df = pd.DataFrame(data_test)
-    test_df.to_csv(os.path.join(test_data, "test.parquet"))
+    test_df.to_parquet(os.path.join(test_data, "test.parquet"))
 
     model = MockModel()
     # Save the model
