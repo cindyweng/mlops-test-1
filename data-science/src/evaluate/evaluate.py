@@ -15,13 +15,6 @@ from matplotlib import pyplot as plt
 
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
-from fairlearn.metrics._group_metric_set import _create_group_metric_set
-from interpret_community import TabularExplainer
-
-from azureml.core import Run
-from azureml.contrib.fairness import upload_dashboard_dictionary
-from azureml.interpret import ExplanationClient
-
 import mlflow
 import mlflow.sklearn
 import mlflow.pyfunc
@@ -67,7 +60,8 @@ def parse_args():
     parser = argparse.ArgumentParser("predict")
     parser.add_argument("--model_name", type=str, help="Name of registered model")
     parser.add_argument("--model_input", type=str, help="Path of input model")
-    parser.add_argument("--prepared_data", type=str, help="Path to transformed data")
+    parser.add_argument("--train_data", type=str, help="Path to train dataset")
+    parser.add_argument("--test_data", type=str, help="Path to test dataset")
     parser.add_argument("--evaluation_output", type=str, help="Path of eval results")
     parser.add_argument("--runner", type=str, help="Local or Cloud Runner", default="CloudRunner")
 
@@ -75,13 +69,13 @@ def parse_args():
 
     return args
 
-
-def main(model_name, prepared_data, model_input, evaluation_output, runner):
+def main(args):
     '''Read trained model and test dataset, evaluate model and save result'''
 
     # Load the train and test data
-    train_data = pd.read_csv((Path(prepared_data) / "train.csv"))
-    test_data = pd.read_csv((Path(prepared_data) / "test.csv"))
+    train_data = pd.read_parquet(Path(args.train_data))
+    test_data = pd.read_parquet(Path(args.test_data))
+
 
     y_train = train_data[TARGET_COL]
     X_train = train_data[NUMERIC_COLS + CAT_NOM_COLS + CAT_ORD_COLS]
@@ -90,22 +84,16 @@ def main(model_name, prepared_data, model_input, evaluation_output, runner):
     X_test = test_data[NUMERIC_COLS + CAT_NOM_COLS + CAT_ORD_COLS]
 
     # Load the model from input port
-    with open((Path(model_input) / "model.pkl"), "rb") as infile:
-        model = pickle.load(infile)
+    model =  mlflow.sklearn.load_model(args.model_input) 
 
     # ---------------- Model Evaluation ---------------- #
-    yhat_test, score = model_evaluation(X_test, y_test, model, evaluation_output)
+    yhat_test, score = model_evaluation(X_test, y_test, model, args.evaluation_output)
 
     # ----------------- Model Promotion ---------------- #
-    if runner == "CloudRunner":
-        predictions, deploy_flag = model_promotion(model_name, evaluation_output, X_test, y_test, yhat_test, score)
+    if args.runner == "CloudRunner":
+        predictions, deploy_flag = model_promotion(args.model_name, args.evaluation_output, X_test, y_test, yhat_test, score)
 
-    # ----------------- Model Fairness ----------------- #
-    sensitive_features = { col: X_test[[col]] for col in SENSITIVE_COLS }
-    fairness(sensitive_features, y_test, predictions, runner)
 
-    # ----------------- Explainability ----------------- #
-    #explainability(model, X_train, X_test, runner)
 
 def model_evaluation(X_test, y_test, model, evaluation_output):
 
@@ -191,51 +179,6 @@ def model_promotion(model_name, evaluation_output, X_test, y_test, yhat_test, sc
 
     return predictions, deploy_flag
 
-def fairness(sensitive_features, y_test, predictions, runner):
-    '''Generates fairness metrics, uploads results to AML run fairness dashboard'''
-
-    # Calculate Fairness Metrics over Sensitive Features
-    # Create a dictionary of model(s) you want to assess for fairness
-
-    dash_dict_all = _create_group_metric_set(y_true=y_test,
-                                             predictions=predictions,
-                                             sensitive_features=sensitive_features,
-                                             prediction_type='regression',
-                                            )
-
-    # Upload the dashboard to Azure Machine Learning
-    dashboard_title = "Fairness insights Comparison of Models"
-
-    # Set validate_model_ids parameter of upload_dashboard_dictionary to False
-    # if you have not registered your model(s)
-    if runner == "CloudRunner":
-        run = Run.get_context()
-        upload_id = upload_dashboard_dictionary(run,
-                                                dash_dict_all,
-                                                dashboard_name=dashboard_title,
-                                                validate_model_ids=False)
-        print(f"\nUploaded to id: {format(upload_id)}\n")
-
-def explainability(model, X_train, X_test, runner):
-    '''Generates explainer, uploads results to AML run explainability dashboard'''
-
-    tabular_explainer = TabularExplainer(model,
-                                    initialization_examples=X_train,
-                                    features=X_train.columns,
-                                    model_task="regression")
-
-    # find global explanations for feature importance
-    # you can use the training data or the test data here,
-    # but test data would allow you to use Explanation Exploration
-    global_explanation = tabular_explainer.explain_global(X_test)
-
-    # upload results to AML run
-    if runner == "CloudRunner":
-        run = Run.get_context()
-        client = ExplanationClient.from_run(run)
-        client.upload_model_explanation(global_explanation, comment='global explanation: all features')
-
-
 if __name__ == "__main__":
 
     mlflow.start_run()
@@ -243,14 +186,16 @@ if __name__ == "__main__":
     args = parse_args()
 
     lines = [
+        f"Model name: {args.model_name}",
         f"Model path: {args.model_input}",
-        f"Test data path: {args.prepared_data}",
+        f"Train data path: {args.train_data}",
+        f"Test data path: {args.test_data}",
         f"Evaluation output path: {args.evaluation_output}",
     ]
 
     for line in lines:
         print(line)
     
-    main(args.model_name, args.prepared_data, args.model_input, args.evaluation_output, args.runner)
+    main(args)
 
     mlflow.end_run()
