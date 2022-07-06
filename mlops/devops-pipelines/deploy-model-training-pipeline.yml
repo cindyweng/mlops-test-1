@@ -51,7 +51,7 @@ stages:
           environment_file: mlops/azureml/train/train-env.yml
       - checkout: rai-vnext-preview
         path: s/
-      - task: RegisterRAI
+      - task: RegisterRAI@1
         displayName: 'Register Responsible AI Components'
         inputs:
           azureSubscription: $(ado_service_connection_aml_ws)
