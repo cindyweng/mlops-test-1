@@ -53,6 +53,8 @@ stages:
       - template: templates/${{ variables.version }}/register-environment.yml@mlops-templates
         parameters:
           build_type: conda
+          environment_name: taxi-train-env
+          environment_file: mlops/azureml/train/train-env.yml
       - checkout: self
         path: s/
       - template: register-rai-components.yml
