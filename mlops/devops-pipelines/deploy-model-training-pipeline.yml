@@ -59,7 +59,7 @@ stages:
         path: s/
       - script: |
           subscription_id=$(az account get-access-token --query tenant --output tsv)
-          bash quick-setup.bash $subscription_id $${{ variables.resource_group }} $${{ variables.aml_workspace }}
+          bash quick-setup.bash conda-env $subscription_id $${{ variables.resource_group }} $${{ variables.aml_workspace }}
         displayName: 'Register Responsible AI Components'
       - checkout: mlops-templates
         path: s/templates/
