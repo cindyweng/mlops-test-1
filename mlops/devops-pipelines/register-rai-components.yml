@@ -4,12 +4,11 @@ parameters:
 - name: aml_workspace
   type: string
 
-resources:
-  repositories:
-    - repository: rai-vnext-preview  # Template Repo
-      name: Azure/rai-vnext-preview # need to change org name from "Azure" to your own org
-      endpoint: github-connection # need to set up and hardcode
-      type: github
+repositories:
+  - repository: rai-vnext-preview  # Template Repo
+    name: Azure/rai-vnext-preview # need to change org name from "Azure" to your own org
+    endpoint: github-connection # need to set up and hardcode
+    type: github
 steps:
   - checkout: rai-vnext-preview
     path: s/
