@@ -49,18 +49,7 @@ stages:
           build_type: conda
           environment_name: taxi-train-env
           environment_file: mlops/azureml/train/train-env.yml
-      - checkout: rai-vnext-preview
-        path: s/
-      - task: AzureCLI@2
-        displayName: Register RAI components
-        inputs:
-          azureSubscription: $(ado_service_connection_aml_ws)
-          scriptType: bash
-          scriptLocation: inlineScript
-          inlineScript: |
-            subscription_id=$(az account get-access-token --query tenant --output tsv)
-            chmod u+x quick-setup.bash
-            bash quick-setup.bash conda-env $subscription_id $${{ variables.resource_group }} $${{ variables.aml_workspace }}
+      - template: register-rai-components.yml
       - template: templates/${{ variables.version }}/run-pipeline.yml@mlops-templates
         parameters: 
           pipeline_file: mlops/azureml/train/pipeline.yml
