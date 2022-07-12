@@ -11,6 +11,6 @@ steps:
       workingDirectory: $(System.DefaultWorkingDirectory)
       scriptLocation: inlineScript
       inlineScript: |
-        subscription_id=$(az account list --query "[?isDefault].id | [0]")
+        subscription_id=$(az account list --query "[?isDefault].id | [0]" --output tsv)
         chmod u+x quick-setup.bash
         bash quick-setup.bash conda-env $subscription_id $(resource_group) $(aml_workspace)
