@@ -34,19 +34,13 @@ stages:
 - stage: DeployTrainingPipeline
   displayName: Deploy Training Pipeline
   jobs:
-    - job: RunTests
-      steps:
-      - checkout: self
-        path: s/
-      - checkout: mlops-templates
-        path: s/templates/
-      - template: templates/tests/unit-tests.yml@mlops-templates
     - job: DeployTrainingPipeline
       steps:
       - checkout: self
         path: s/
       - checkout: mlops-templates
         path: s/templates/
+      - template: templates/tests/unit-tests.yml@mlops-templates
       - template: templates/${{ variables.version }}/install-az-cli.yml@mlops-templates
       - template: templates/${{ variables.version }}/install-aml-cli.yml@mlops-templates
       - template: templates/${{ variables.version }}/connect-to-workspace.yml@mlops-templates
@@ -55,14 +49,13 @@ stages:
           build_type: conda
           environment_name: taxi-train-env
           environment_file: mlops/azureml/train/train-env.yml
-      - checkout: self
+      - checkout: rai-vnext-preview
         path: s/
-      - template: register-rai-components.yml
-        parameters: 
-          resource_group: ${{ variables.resource_group }}
-          aml_workspace: ${{ variables.aml_workspace }}
-      - checkout: mlops-templates
-        path: s/templates/
+      - script: |
+          subscription_id=$(az account get-access-token --query tenant --output tsv)
+          chmod u+x quick-setup.bash
+          bash quick-setup.bash conda-env $subscription_id $${{ variables.resource_group }} $${{ variables.aml_workspace }}
+        displayName: 'Register Responsible AI Components'
       - template: templates/${{ variables.version }}/run-pipeline.yml@mlops-templates
         parameters: 
           pipeline_file: mlops/azureml/train/pipeline.yml
